@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>使用JS创建虚拟DOM</title>
+</head>
+
+<body>
+
+  <!-- 准备好一个容器 -->
+  <div id="test"></div>
+
+  <!-- 引入react核心库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/react/15.5.0/react.min.js"></script>
+
+  <!-- 引入react-dom,用于支持react操作DOM，注意这里的顺序，先引入核心库再引入扩展库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-dom/15.5.0/react-dom.min.js"></script>
+
+  <script type="text/javascript">
+    // 1.创建虚拟DOM---- 注意React中的class被改为了 className
+    const Kobe = React.createElement('h1', {id: 'title', className: 'title'}, React.createElement('span', {}, 'Hello, React'))
+
+    // 上面的JS写的虚拟DOM，就是 JSX 经过 babel 翻译之后的样子哦！
+    // 所以JSX(语法糖)的存在使得创建虚拟DOM更加简单，就像和写HTML一样！
+
+    // 2.渲染虚拟DOM到页面
+    ReactDOM.render(Kobe, document.getElementById('test'))
+  </script>
+
+</body>
+
+</html>
