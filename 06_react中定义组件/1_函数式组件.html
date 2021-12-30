@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>函数式组件</title>
+</head>
+
+<body>
+
+  <!-- 准备好一个“容器” -->
+  <div id='test'></div>
+
+  <!-- 引入react核心库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/react/15.5.0/react.min.js"></script>
+  <!-- 引入react-dom,用于支持react操作DOM，注意这里的顺序，先引入核心库再引入扩展库 -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/react-dom/15.5.0/react-dom.min.js"></script>
+  <!-- 引入babel，用于将jsx转为JS，es6转为es5 -->
+  <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+
+  <script type='text/babel'>
+
+    // 1. 创建函数式组件 => 注意:函数式组件必须有返回值
+    const Kobe = () => {
+      console.log('函数组件的this:', this);  // 输出 undefined => (ps: 这里竟然不是指向 Window)
+      return <h2>感谢你特别邀请，来见证你的爱情</h2>
+    }
+
+    // 2. 渲染虚拟DOM到页面
+    ReactDOM.render(<Kobe />, document.getElementById('test'))
+
+    /*
+      说明：
+        上面的代码在经过babel编译后，会进入严格模式，
+        严格模式下 禁止自定义函数的 this 指向 Window，
+        所以函数式组件的 this 就变成了 undefined
+    */
+
+    /*
+        执行了ReactDOM.render(<Demo />, document.getElementById('test'))....之后，发生了什么？
+        1. React解析组件标签，找到了Demo组件
+        2. 发现组件是使用函数定义的，随后调用该函数，
+           将返回的虚拟DOM转为真实DOM (所以函数式组件必须有返回值)，随后呈现在页面中
+    */
+
+  </script>
+
+</body>
+
+</html>
