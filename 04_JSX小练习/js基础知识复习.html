@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+    // 下面的map方法是表达式(ps:有值), 还是js语句(ps:没有值，控制代码走向)呢？
+    const arr = [1, 3, 5, 7, 9];
+    const result = arr.map((item, index) => {
+      return item + 1
+    })
+    console.log(result); // [2, 4, 6, 8, 10]
+
+
+    // 下面的函数是表达式(ps:有值), 还是js语句(ps:没有值，控制代码走向)呢？
+    const fn = function test() {
+      console.log(2);
+    }
+    console.log(fn);
+    /*
+    输出：
+      ƒ test() {
+        console.log(2);
+      }
+    这函数也是有值的，所以函数也是表达式
+    */
+
+    /* 凡是是js表达式(有值的)，都可以在JSX中写 */
+
+  </script>
+</body>
+
+</html>
