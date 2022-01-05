@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <button id="btn1">按钮1</button>
+  <button id="btn2">按钮2</button>
+  <button onclick="demo()">按钮3</button>
+
+  <script>
+    const btn1 = document.getElementById('btn1')
+    btn1.addEventListener('click', () => {
+      console.log('按钮1被点击了');
+    })
+
+    const btn2 = document.getElementById('btn2')
+    btn2.onclick = () => {
+      console.log('按钮2被点击了');
+    }
+
+
+    // 第三种方式是 react 更推荐的事件绑定方式
+    function demo() {
+      console.log('按钮3被点击了');
+    }
+
+
+    // 测试严格模式下 函数的this 指向
+    // 1.不开启严格模式
+    function ooo() {
+      console.log(this); //指向 window
+    }
+    ooo() 
+
+    // 2.开启严格模式
+    function ppp() {
+      'use strict'
+      console.log(this); //指向 undefined
+    }
+    ppp() 
+
+  </script>
+
+</body>
+
+</html>

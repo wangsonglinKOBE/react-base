@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>state</title>
+</head>
+
+<body>
+  <!-- 准备好一个“容器” -->
+  <div id="test"></div>
+
+  <!-- 引入react核心库 -->
+  <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+  <!-- 引入react-dom,用于支持react操作DOM -->
+  <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+  <!-- 引入babel，用于将jsx转为JS -->
+  <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+  <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+  <script type="text/babel">
+    // 1. 创建虚拟DOM
+    class Weather extends React.Component {
+      constructor(props) {
+        // 构造函数调用几次？ -- 1次
+        super(props)
+        this.state = { isHot: false }
+        /*
+            分析：该this.changeWeather = this.changeWeather.bind(this)语句为赋值语句
+            先分析等号右侧是什么
+            等号右侧的this是谁？ constructor构造函数里面的this,当然是组件的实例对象下面的<Weather />组件
+            那 .changeWeather什么意思? <Weather />组件实例对象自身有changeWeather吗？答案是没有
+            那纵使实例对象上没有changeWeather，它也会顺着原型找，这个changeWeather就在Weather的原型对象上，供实例使用
+            于是就找到了下面的changeWeather方法，接下来.bind, .bind做了两件事，第一，返回一个函数，第二，改了this
+            那这里把this改成了什么？传入的this,这个this是？是Weather的实例对象 也就是<Weather />组件实例对象
+            现在右侧代码执行完毕了，返回了一个新的函数，而且这个新的函数中的this已经变成了Weather的实例对象 也就是<Weather />组件实例对象
+        
+            然后是等号左侧，这里的this当然还是Weather的实例对象，通过这个this把这个新的函数放到了Weather的实例对象的自身，
+            并且还起了一个名字叫changeWeather
+            所以该行代码this.changeWeather = this.changeWeather.bind(this)执行完毕之后，你的实例对象也就是<Weather />组件实例对象
+            就多了一个方法，叫changeWeather，所以这时changeWeather方法中的this就是<Weather />组件实例对象
+        
+            那么问题又来了，当我们点击触发点击事件的时候，调用的是Weather原型对象的changeWeather还是挂在实例自身的changeWeather？
+            按照原型链查找顺序的知识可得
+            调用的是挂在<Weather />组件实例对象自身的changeWeather
+        
+            那有同学会说，那没有调用原型上的changeWeather，要他有何用，直接删除掉
+            删除掉了原型上的changeWeather就没法生成实例上的changeWeather咯
+        
+            所以说左边的changeWeather是真正调用的onClick={this.changeWeather}中的changeWeather
+            而右边的changeWeather是Weather类的原型对象上的changeWeather
+        */
+
+        this.changeWeather = this.changeWeather.bind(this)
+
+        /* 
+            这里的this.changeWeather = this.changeWeather.bind(this)意思就是将Weather类自己身上
+            的changeWeather(就是下面写的changeWeather)方法中的this通过bind把changeWeather方法中的this改为Weather的实例对象(记住：构造函数中的this就是指向实例对象的)【等号右边】
+            然后在将这个方法添加到Weather的实例对象自己身上【等号左边】
+            所以写完了这行代码，表示在Weather类的自身和Weather实例对象身上都有这个changeWeather方法，onClick点击调用的时候顺着原型链找首先找到了Weather实例对象身上的changeWeather方法并调用            
+        */
+      }
+
+      changeWeather() {
+        // changeWeather放在哪里？=> Weather的原型对象上，供实例使用
+        // 由于changeWeather是作为onClick的回调，所以不是通过实例调用的，是直接调用，
+        // 类中的方法默认开启了局部严格模式，所以changeWeather中的this就是undefined
+        // console.log('标题被点击了');
+        // 这里的this为什么是undefined?
+        // Weather类的实例没有调用changeWeather？
+        // 为什么changeWeather里的this会丢失？
+        // console.log(this);  //undefined
+        // 上面的问题在类的this指向中查看(./本小节涉及js的基础知识/class类中的方法的this指向.html)
+
+        // 严重注意：状态state不可直接更改
+        // this.state.isHot = !this.state.isHot
+        // console.log(this.state.isHot)
+
+        // 那正确更改state的方法是？答案是得调用一个api
+        // 那这个api在哪儿呢？
+        // 在Weather实例对象中的Weather类的原型对象中的原型对象也就是这里继承的React.Component的原型对象中的setState方法
+        // 那如何能调用这个setState？ this.setState就能找到
+        // const isHot = this.state.isHot
+
+        console.log('changeWeather方法中的this', this);
+
+        this.setState({
+          isHot: !this.state.isHot
+        })
+
+      }
+
+      // changeWeather = () => {
+      //     console.log(this)
+      // }
+
+      render() {
+        // render调用几次？ -- 1+n次，1是初始化的那次 n是状态更新的次数
+        console.log('render中的this', this);
+        const { isHot } = this.state
+        return <h1 id="title" onClick={this.changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'}</h1>
+      }
+    }
+    // 2. 渲染虚拟DOM到页面
+    ReactDOM.render(<Weather />, document.getElementById('test'))
+
+        // const title = document.getElementById('title')
+        // title.addEventListener('click', () => {
+        //     console.log('标题被点击了');
+        // })
+
+        // const title = document.getElementById('title')
+        // title.onclick = () => {
+        //     console.log('标题被点击了');
+        // }
+  </script>
+</body>
+
+</html>

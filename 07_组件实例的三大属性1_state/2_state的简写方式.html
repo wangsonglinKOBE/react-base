@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>state</title>
+</head>
+
+<body>
+  <!-- 准备好一个“容器” -->
+  <div id="test"></div>
+
+  <!-- 引入react核心库 -->
+  <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+  <!-- 引入react-dom,用于支持react操作DOM -->
+  <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+  <!-- 引入babel，用于将jsx转为JS -->
+  <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+  <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+  <script type="text/babel">
+    class Weather extends React.Component {
+      state = { isHot: false } //这也是属于在类中写赋值语句，意思就是给类的每个实例加上state属性，下面的changeWeather同理
+
+      // 那这里的changeWeather方法 5行代码，你就可以看做是类中的赋值语句
+      // 然后这里的changeWeather又变成实例对象自己身上的,不再是类原型上的了,也就不用bind去改变this指向了
+      // changeWeather相当于wheel，后面的箭头函数就为4（class类的基本知识.html）中见
+      // 主要这里要是箭头函数哦，要是是普通函数，那这波操作对比前面的不简写方式相当于这是把changeWeather方法的位置从类自身换到实例身上了，可是changeWeather方法的this依旧不是实例
+      // (类中的方法默认开启严格模式所以是undefined 如下：39行)
+      changeWeather = () => {
+        console.log(this);
+          this.setState({
+              isHot: !this.state.isHot
+          })
+      }
+
+      // changeWeather = function () {
+      //   console.log(this);
+      //   this.setState({
+      //     isHot: !this.state.isHot
+      //   })
+      // }
+
+      render() {
+        const { isHot } = this.state
+        return <h1 id="title" onClick={this.changeWeather}>
+          今天天气很{isHot ? '炎热' : '凉爽'}
+        </h1>
+      }
+    }
+    ReactDOM.render(<Weather />, document.getElementById('test'))
+  </script>
+</body>
+
+</html>

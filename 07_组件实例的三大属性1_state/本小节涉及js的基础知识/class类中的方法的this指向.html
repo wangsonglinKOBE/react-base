@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            study() {
+                // study方法放在了哪里？=> 类的原型对象上，供实例使用
+                // 通过Person实例调用study时，study中的this就是Person的实例
+                console.log(this);
+            }
+        }
+        const p1 = new Person('kobe', 22)
+        p1.study() // 通过实例调用study方法，this就是该实例
+
+        // 注意：下面的操作
+        const x = p1.study /* 注意这里没有调用 相当于 react中的 onClick={this.changeWeather} 也没调用changeWeather
+                            * 而是通过onClick点击调用的changeWeather(){}
+                            * 这里的点击事件onClick就和这个x很相似了
+                           */
+        x(); //undefined 
+        /* 
+            这里是由x调用的，而x不是Person类的实例，所以不是Person的实例调用的
+            也就是说这里的x()属于直接调用，也就说相当于这个study函数在堆内存中
+            原来只有一个方法能找到他调用它，就是p1.study()
+            当你做了一个x()操作之后，那么这个study函数又多了一个引用x()
+            那么问题又来了，那这属于直接调用这个study函数，那这个this也不应该是undefined吧？
+            不应该是window?
+            那么这又涉及到一个知识点了
+            类中所有你定义的方法，他在局部都开启了严格模式，也就是说他在方法内部都开启了严格模式
+            由于开启了严格模式，所以this的指向不再是window而是undefined,这是类自动开的和babel没关系
+            下面做个局部开严格模式的示范
+        */
+
+        function demo() {
+            console.log(this);
+        }
+        demo() // window
+
+        function demo2() {
+            // 局部开启严格模式
+            'use strict'
+            console.log(this);
+        }
+        demo2() // undefined
+
+    </script>
+</body>
+
+</html>
