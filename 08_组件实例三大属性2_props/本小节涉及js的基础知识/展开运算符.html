@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>展开运算符</title>
+</head>
+
+<body>
+  <script type="text/javascript">
+
+
+    const arr = [1, 3, 5, 7, 9]
+    console.log(...arr) //展开数组 => 1 3 5 7 9
+
+    const arr2 = [2, 4, 6, 8, 10]
+    console.log([...arr, ...arr2]) //合并数组 => [1, 3, 5, 7, 9, 2, 4, 6, 8, 10]
+
+    // 作为函数的参数传递 => 数组求和
+    function demo(...numbers) {
+      return numbers.reduce((preVale, currentValue) => {
+        return preVale + currentValue
+      })
+    }
+    console.log(demo(1, 2, 3, 4, 5)) //作为函数的参数传递，数组求和 => 15
+
+
+    // 下面就是和react中相关涉及到的内容
+    const obj = { name: 'kobe', age: 24 }
+    // console.log(...obj) //阿哦，报错咯，扩展运算符不能展开对象哦，由于JS是单线程的所以将它注释掉，我们继续
+
+    const ooo = { name: 'jerry', age: 30 }
+    const ooo2 = ooo
+    console.log(ooo2) // { name: 'jerry', age: 30 }
+    ooo.name = 'lisa'
+    console.log(ooo2) //{name: "lisa", age: 30} => 众所周知，这就是浅拷贝啦(当被拷贝的对象改变时，拷贝后得新对象也跟着改变)
+
+    // 构造字面量对象时使用展开语法(深拷贝对象)
+    const ppp = { name: 'yasuo', age: 40 }
+    const ppp2 = { ...ppp }
+    console.log(ppp2) //{ name: 'yasuo', age: 40 }
+    ppp.name = 'hasak'
+    console.log(ppp2) //{ name: 'yasuo', age: 40 } => 没变，实现深拷贝了
+    console.log(ppp) //{name: "hasak", age: 40} 
+
+
+    // 那除了深拷贝，还能不能合并？
+    const uuu = { name: 'yyds', age: 60 }
+    const uuu2 = { address: '地球' }
+    const uuu3 = { ...uuu, ...uuu2 }
+    console.log(uuu3) //{name: "yyds", age: 60, address: "地球"} => 可以合并哦
+    // 换个玩法(复制对象的同时修改他的属性)
+    const uuu4 = { ...uuu, name: '永远的神' }
+    console.log(uuu4) //{name: "永远的神", age: 60} => 这也是合并哦
+
+
+    // 下面就来讲讲react中，关于给组件传递大量props时，所使用的的扩展运算符
+    // 比如这个p对象是通过ajax获取的数据
+    const p = { name: 'kobe', age: 24, sex: '男', address: '北京' }
+    // 在react中呢，可以像这样写来展开一个对象
+    // ReactDOM.render(<Person {...p} />, document.getElementById('test2'))
+        // 明白了，这是在深拷贝p这个对象
+        // 这么想就错了哈，这里这个花括号可不是深拷贝的花括号，这花括号代表里面是JS表达式，注意了嗷
+        // 所以这里的{...p}实际上呢就是 ...p 
+        // 那就奇了怪了，上面不是已经证明了，对象是不能展开的吗,这儿还能这么用？
+        // 那这里就有两个人要站出来首当其冲了，一个是babel,一个是react核心库，他两加在一起导致了什么
+        // 没错，他两加在一起，就可以允许你用展开运算法去展开一个对象了
+        // 那我好奇啊，我好想看看展开后的对象是长什么样子
+        // 于是，来, 我们在空白处打印一下这个 ...p 
+        // (在 1_props基本使用.html) 中 41行 输出 ：console.log('@',...p)
+        // 控制台见 => @  控制台只留下了一个@
+        // 哎呀，还看不成，所以这两个人 babel 和 React核心库，可不允许你随便用这玩意儿
+        // 只有在便签属性中才能这么用哈，
+        // 不然在那儿都能随意使用，是不是太不把我javascript当大哥了
+
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>对props进行限制</title>
+</head>
+
+<body>
+
+  <!-- 准备好一个“容器” -->
+  <div id="test"></div>
+  <div id="test2"></div>
+
+  <!-- 引入react核心库 -->
+  <script src='https://cdn.bootcdn.net/ajax/libs/react/15.5.0/react.min.js'></script>
+  <!-- 引入react-dom,用于支持react操作DOM -->
+  <script src='https://cdn.bootcdn.net/ajax/libs/react-dom/15.5.0/react-dom.min.js'></script>
+  <!-- 引入babel，用于将jsx转为JS -->
+  <script src='https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js'></script>
+  <!-- 引入prop-types 对props进行限制 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.6.0/prop-types.js"></script>
+
+  <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+  <script type="text/babel">
+
+    console.log('2222', PropTypes);
+
+    // 创建组件
+    class Person extends React.Component {
+      render() {
+        // props是只读的
+        // this.props.name = 'jack' 报错，props只读，不可修改
+        console.log(this);
+        const { name, age, sex } = this.props
+        return (
+          <ul>
+            <li>姓名：{name}</li>
+            <li>性别：{sex}</li>
+            <li>年龄：{age}</li>
+          </ul>
+        )
+      }
+    }
+
+    // Person.propTypes = {
+    //     name:PropTypes.string.isRequired,
+    //     sex:PropTypes.string,
+    //     age:PropTypes.number
+    // }
+    // Person.defaultProps = {
+    //     sex: '不男不女'
+    // }
+    // console.log('Person.propTypes', Person.propTypes);
+    ReactDOM.render(<Person name={100} age='19' sex="女" />, document.getElementById('test'))
+
+    const p = { name: 100, age: 24, sex: '男' }
+    // ReactDOM.render(<Person name={p.name} age={p.age} sex={p.sex}/>, document.getElementById('test2'))
+    // 语法糖写法
+    ReactDOM.render(<Person {...p} />, document.getElementById('test2'))
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>props的简写方式</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+    <div id="test2"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+        // 创建组件
+        class Person extends React.Component {
+            constructor(props) {
+                // 构造器是否接收props,是否传递给super，取决于：是否希望在构造器中通过this访问props
+                super(props)
+                console.log(props)
+                console.log('实例的props', this.props);
+            }
+            render() {
+                // props是只读的
+                // this.props.name = 'jack' 报错，props只读，不可修改
+                // console.log(this);
+                const { name, age, sex } = this.props
+                return (
+                    <ul>
+                        <li>姓名：{name}</li>
+                        <li>性别：{sex}</li>
+                        <li>年龄：{age}</li>
+                    </ul>
+                )
+            }
+
+            static propTypes = {
+                // name: PropTypes.string.isRequired,
+                // sex: PropTypes.string,
+                // age: PropTypes.number
+            }
+            static defaultProps = {
+                // sex: '不男不女'
+            }
+
+        }
+
+        ReactDOM.render(<Person name='tom' age={19} sex="女" />, document.getElementById('test'))
+
+        const p = { name: 'kobe', age: 24, sex: '男' }
+        // ReactDOM.render(<Person name={p.name} age={p.age} sex={p.sex}/>, document.getElementById('test2'))
+        // 语法糖写法
+        ReactDOM.render(<Person {...p} />, document.getElementById('test2'))
+    </script>
+</body>
+
+</html>
