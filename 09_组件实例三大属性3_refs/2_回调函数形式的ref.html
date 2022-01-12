@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ref</title>
+</head>
+
+<body>
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>回调函数形式的ref</title>
+  </head>
+
+  <body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+      // 1. 创建组件
+      class Demo extends React.Component {
+        handleClick = () => {
+          alert(this.ccc.value)
+          console.log(this.ccc);
+        }
+        handleOnblur = () => {
+          const { vvv } = this
+          alert(vvv.value)
+        }
+        render() {
+          return (
+            <div>
+              <input ref={currentNode => this.ccc = currentNode} type="text" placeholder="点击按钮提示数据" />&nbsp;
+              <button onClick={this.handleClick}>点我提示左侧数据</button>&nbsp;
+              <input ref={currentNode => this.vvv = currentNode} onBlur={this.handleOnblur} type="text" placeholder="失去焦点提示数据" />
+            </div>
+          )
+        }
+      }
+      // 2. 渲染虚拟DOM到页面
+      ReactDOM.render(<Demo />, document.getElementById('test'))
+
+
+      /*
+          回调函数：1.你定义的函数
+                    2.你没调用
+                    3.这函数最终执行了
+                    你定义的函数你没调用最终由别人调用了
+          那上面这个回调函数会收到什么参数呢？调用者传什么，他就收什么
+          于是我们在该回调函数中接收一个参数并打印
+          打印结果为该参数是ref所在的节点
+          React内部操作：new了一个Demo的实例，并且调用了render,调用了render就执行了里面的JSX，
+          于是就触发了该回调函数的调用，并且将该ref所处的节点传入了回调函数中
+          this.ccc = currentNode :把该节点放在了实例对象自己身上，并且取名为ccc
+      */
+    </script>
+  </body>
+
+  </html>
+</body>
+
+</html>

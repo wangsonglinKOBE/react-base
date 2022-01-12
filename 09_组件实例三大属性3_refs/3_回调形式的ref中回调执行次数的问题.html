@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ref</title>
+</head>
+
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>3_回调ref中回调执行次数的问题</title>
+    </head>
+
+    <body>
+        <!-- 准备好一个“容器” -->
+        <div id="test"></div>
+
+        <!-- 引入react核心库 -->
+        <script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+        <!-- 引入react-dom,用于支持react操作DOM -->
+        <script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+        <!-- 引入babel，用于将jsx转为JS -->
+        <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+        <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+        <script type="text/babel">
+            // 1. 创建组件
+            class Demo extends React.Component {
+                state = {
+                    isHot: true
+                }
+                handleClick = () => {
+                    const { currentValue } = this
+                    alert(currentValue.value)
+                }
+                handleWeather = () => {
+                    const { isHot } = this.state
+                    this.setState({
+                        isHot: !isHot
+                    })
+                }
+                saveInput = ccc => {
+                    //注意:这里是将 ref 的回调函数定义成 class 的绑定函数的方式
+                    // 避免了在组件更新时会调用两次ref的回调函数（不在清空一次ref了）
+                    // 那这是为什么不会引起清空一次再调用一次呢？
+                    // 因为就算以后在更新组价，再次调用了render,看看下面的写法，
+                    // this.saveInput 他就会发现组件自身已经有这个函数了，他不再是一个新的函数了
+                    this.rrr = ccc
+                    console.log('@2', ccc)
+                }
+                render() {
+                    return (
+                        <div>
+                            <h2 onClick={this.handleWeather}>今天天气{this.state.isHot ? '炎热' : '凉爽'}</h2>
+                            {/*<input
+                              ref={currentNode => {this.currentValue = currentNode, console.log('@', currentNode)}}
+                              type="text"
+                            />&nbsp;*/}
+                            
+                            <input
+                              ref={this.saveInput}
+                              type="text"
+                            />&nbsp;
+                            <button onClick={this.handleClick}>点我提示输入的数据</button>&nbsp;<br/>
+                        </div>
+                    )
+                }
+            }
+            /*
+               这里使用回调函数形式的ref调用了几次？
+               react官方文档是这么说的：说如果 ref 回调函数是以内联函数的方式定义的，
+               巧了，我们上面这种情况就是使用内联函数定义的 ref 回调函数，
+               于是又说，在 更新过程 中它会被调用两次，第一次传入参数null，然后第二次会传入参数DOM元素
+               于是我们通过上面的试验，发现控制台就打印一次  “@ <input type=​"text">​”
+               那就奇怪了，官方不是说有两次嘛，这怎么只执行了第二次
+               当你再仔细阅读官方的话，你会发现，是更新过程中，什么叫更新过程中？
+               更新一次调用一次render渲染一次页面，所以说要触发render的调用才算事更新啊，同学
+               所以说只有在组件更新的时候才能暴露出来官方所说的问题
+               所以我们来写一段让组件更新的代码
+               通过一点改变天气的代码实现了状态的更新进而出发了render的调用导致组件更新
+               当我们点击h2触发更新时，发现我们在ref的回调函数中所打印的输出
+               和官网说的一样，有两次打印 “@ null" "@ <input type=​"text">"
+               然而该机制不会影响原功能，有点较真了哈
+               这么做也是为了清空一次之前的ref
+               官方又说提供了一种方式，可以避免这个问题
+                于是我们来解决一下，写在外部形势的回调函数：将 ref 的回调函数定义成 class 的绑定函数的方式
+                当然第一种内联的方式还是很方便的，推荐使用
+            */
+            
+
+
+            // 2. 渲染虚拟DOM到页面
+            ReactDOM.render(<Demo />, document.getElementById('test'))
+
+        </script>
+    </body>
+
+    </html>
+</body>
+
+</html>

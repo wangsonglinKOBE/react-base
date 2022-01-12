@@ -1,0 +1,22 @@
+1、理解
+组件内的标签可以定义 ref 属性来标识自己
+就是在标签节点写一个回调函数形式的ref,然后react内部调用时会把这个节点传给你，你再把这个节点添加到实例对象(this)自身身上
+<input type='text' ref={currentNode => this.aaa = currentNode}/>
+
+2、关于回调函数形式的ref中的回调函数调用次数的问题
+这是一个关于回调函数形式的ref的写法不同而产生的问题
+当把ref写成内联形式的时候ref的回调函数会调用两次，
+并且调用两次的前提是组件更新了调用了render了，不然也不会调用两次，因为组件更新了react内部会先调用一次这个回调并且在回调中传的参数是null，做一个清空的动作，然后再第二次把当前节点传入进去调用
+<input ref={currentNode => {this.currentValue = currentNode, console.log('@', currentNode)}} type="text"/>
+
+如果将这个回调函数写成外部形势的就可以避免这个问题,当状态发生改变调用render更新时，ref的回调也只会调用一次，
+<input ref={this.saveInput} type="text" />
+saveInput = ccc => {
+                    //注意:这里是将 ref 的回调函数定义成 class 的绑定函数的方式
+                    // 避免了在组件更新时会调用两次ref的回调函数（不在清空一次ref了）
+                    // 那这是为什么不会引起清空一次再调用一次呢？
+                    // 因为就算以后在更新组价，再次调用了render,看看下面的写法，
+                    // this.saveInput 他就会发现组件自身已经有这个函数了，他不再是一个新的函数了
+                    this.rrr = ccc
+                    console.log('@2', ccc)
+                }

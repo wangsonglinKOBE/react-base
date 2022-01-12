@@ -1,0 +1,33 @@
+1 、 理解
+每个组件对像都会有props(properties)属性
+组件标签的所有属性都保存在props中
+
+2 、 作用
+通过标签属性从组件外向组件内传递变化的数据
+注意：组件内部不能修改props数据 props是只读的
+
+3 、 编码操作
+内部读取某个属性值
+this.props.name
+
+对props中的属性值进行类型限制和必要性限制
+第一种方式(React v15.5开始已弃用)：
+Person.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  age: React.PropTypes.number
+}
+
+第二种方式(新)：
+使用prop-types 库进行限制(需要引入prop-types库)
+Person.propTypes = {
+  name: PropTypes.string.isRequired,
+  age: PropTypes.number
+}
+不再从React身上取PropTypes
+
+4 、 默认属性值
+Person.defaultProps = {
+  age: 18,
+  sex: '男' 
+}
+
