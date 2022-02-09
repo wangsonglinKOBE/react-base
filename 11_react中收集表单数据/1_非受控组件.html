@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>非受控组件</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+        // 1. 创建组件
+        class Login extends React.Component {
+            handleSubmit = (e) => {
+                const { nameValue, passwordValue } = this
+                alert(`你输入的用户名是：${nameValue.value},你输入的密码是：${passwordValue.value}`)
+                e.preventDefault() //阻止表单的默认提交
+            }
+            render() {
+                return (
+                    <form action="http://www.atguigu.com" onSubmit ={this.handleSubmit}>
+                        用户名：<input ref={c => this.nameValue=c} type="text" name="userName"/>
+                        密码：<input ref={c => this.passwordValue=c} type="password" name="password"/>
+                        <button>登录</button>
+                    </form>
+                )
+            }
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Login />, document.getElementById('test'))
+
+        /*
+          不给form表单指定请求方式时，form表单默认发出get请求，并且默认带的参数是query参数
+          query参数是name的值
+          onSubmit当表单提交时触发，给onSubmit一个回调函数，当表单提交时调用回调
+
+          现在希望页面无刷新(即不跳转)获取用户输入的数据 通过ajax实现页面无刷新获取到用户输入的数据
+          ajax的页面无刷新获取数据提高了用户体验
+
+          该表单在点击登录时的onSubmit回调函数中已经拿到了数据，并且弹窗提示了，接下来我们不希望
+          再进行页面跳转到新的提交地址上去，而是通过把已经获取的数据传给后台，这样页面就不会跳转
+          使用 e.preventDefault()阻止表单默认提交事件，
+          这样表单就没有真正的提交了，当再次点击时，只会弹窗输入内容并不会触发表单提交和页面更新的跳转
+          整个流程都使用ajax进行交互
+
+          总结：非受控组件 => 现用现取
+        */
+    </script>
+</body>
+
+</html>
