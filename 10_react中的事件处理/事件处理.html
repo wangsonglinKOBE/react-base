@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>react中的事件处理</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+        // 1. 创建组件
+        class Demo extends React.Component {
+            /*
+             1) 通过onXxx属性指定事件处理函数(注意大小写)
+                a. React使用的是自定义(合成)事件，而不是使用的原生DOM事件
+                   React将所有的原生事件都重新封装了一遍，为了更好的兼容性
+                b. React中的事件是通过事件委托方式处理的(委托最外层组件的元素)
+                   为了高效
+             2）通过event.target得到发生事件的DOM对象
+                不要过度的使用ref，发生事件的元素正好是你要操作的元素时使用event.target
+                当事件和要操作的DOM元素在同一个元素对象上时可以使用event.target获取DOM对象
+
+                当要操作的DOM元素和事件绑定的DOM元素不是同一个元素时，目前可以使用ref来获取要操作的DOM元素
+            */
+                myRef = React.createRef()
+                handleClick = () => {
+                    const { current } = this.myRef
+                    console.log(current.value)
+                }
+
+                myRef2 = React.createRef()
+                handleBlur = (e) => {
+                    console.log(e.target.value)
+                }
+
+                render() {
+                    return (
+                        <div>
+                            <input ref={this.myRef} type="text" placeholder="点击按钮提示数据"/>&nbsp;
+                            <button onClick={this.handleClick}>点我提示左侧数据</button>&nbsp;
+                            <input onBlur={this.handleBlur} type="text" placeholder="失去焦点提示数据"/>
+                        </div>
+                    )
+                }
+            }
+
+            // 2. 渲染虚拟DOM到页面
+            ReactDOM.render(<Demo/>, document.getElementById('test'))
+    </script>
+</body>
+
+</html>
