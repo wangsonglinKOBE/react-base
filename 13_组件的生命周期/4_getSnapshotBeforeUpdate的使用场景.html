@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>4_getSnapshotBeforeUpdate的使用场景</title>
+    <style>
+        .list {
+            width: 200px;
+            height: 150px;
+            background-color: skyblue;
+            overflow: auto;
+        }
+        .news {
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+        //由于要使用 componentWillUnmount(组件将要卸载钩子) 
+        //所以，
+        // 需要我们点击按钮回调 ReactDOM.unmountComponentAtNode(document.getElementById('test'))
+        //来卸载掉组件，才能触发 componentWillUnmount(组件将要卸载钩子) 
+
+
+        // 生命周期回调函数 <=> 生命周期钩子函数 
+        // 1. 创建组件
+        class Count extends React.Component {
+
+            state = {
+               newsArr:[] 
+            }
+
+            componentDidMount() {
+                setInterval(() => {
+                    // 获取原状态
+                    const { newsArr } = this.state
+                    // 模拟一条新闻
+                    const news = '新闻' + (newsArr.length+1)
+                    // 更新状态
+                    this.setState({
+                        newsArr: [news, ...newsArr]
+                    })
+                }, 1000)
+            }
+
+            getSnapshotBeforeUpdate() {
+               return this.refs.list.scrollHeight
+            }
+
+            componentDidUpdate(preProps, preState, snapshotValue) {
+                this.refs.list.scrollTop += this.refs.list.scrollHeight - snapshotValue
+            }
+
+            // 初始化渲染、状态更新后 (1+n)
+            render() {
+                return (
+                    <div>
+                        <div className="list" ref="list">
+                            {
+                                this.state.newsArr.map((item, index) => {
+                                 return <div className='news' key={index}>{item}</div>
+                                })
+                            }
+                        </div>
+                    </div>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Count />, document.getElementById('test'))
+    </script>
+</body>
+
+</html>

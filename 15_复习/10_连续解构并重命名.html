@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const obj = { a: { b: { c: 'kobe-bryant' } } }
+        // 正常取出c的值
+        // console.log(obj.a.b.c)
+
+        // 使用连续解构赋值取出c的值
+        const { a:{b:{c}} } = obj
+        console.log(c)
+
+        const obj2 = { a: { b: 'jems' } }
+        // 连续解构赋值并重命名为data
+        const { a:{b:data} } = obj2
+        console.log(data)
+    </script>
+</body>
+</html>

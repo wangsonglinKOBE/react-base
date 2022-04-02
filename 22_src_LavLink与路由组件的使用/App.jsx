@@ -1,0 +1,48 @@
+import React, { Component } from 'react'
+import { NavLink, Route } from 'react-router-dom' //NavLink => 让路由连接在点击以后拥有高亮模式
+import Home from './pages/Home'                   //NavLink给Link连接添加了一个active的类名，点谁谁就加上active
+import About from './pages/About'                 //（使用bootatrap的情况下）
+import Header from './components/Header' //Header是一般组件
+
+export default class App extends Component {
+    render() {
+        return (
+            <div>
+                <div className="row">
+                    <div className="col-xs-offset-2  col-xs-8">
+                        <div className="page-header">
+                            <Header />
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-2 col-xs-offset-2">
+                        <div className="list-group">
+                            {/* 原生html中，靠<a>跳转不同的页面 */}
+                            {/* <a href="./about.html" className="list-group-item">About</a>
+                            <a href="./home.html" className="list-group-item active">Home</a> */}
+
+                            {/* 在React中靠路由连接实现切换组件 */}
+                            {/* activeClassName为NavLink的高亮样式配置属性，不写默认为active
+                                这个写了demo在index.html中写了样式，注意!important的使用，最高权重
+                             */}
+                            <NavLink activeClassName="demo" className="list-group-item" to="/about">About</NavLink>
+                            <NavLink activeClassName="demo" className="list-group-item" to="/home">Home</NavLink>
+
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="panel">
+                            <div className="panel-body">
+                                {/* 注册路由*/}
+                                <Route path="/about" component={About} />
+                                <Route path="/home" component={Home} />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}

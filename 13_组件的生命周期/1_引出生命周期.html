@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>引出生命周期</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+    // 生命周期回调函数 <=> 生命周期钩子函数 
+        // 1. 创建组件
+        class Life extends React.Component {
+            state = {
+                opacity: 1
+            }
+            death = () => {
+                // 卸载组件
+                ReactDOM.unmountComponentAtNode(document.getElementById('test'))
+            }
+
+            // 组件挂载完毕 (1)
+            componentDidMount() {
+                console.log('componentDidMount');
+                this.timer = setInterval(() => {
+                    let { opacity } = this.state
+                    // 减小0.1
+                    opacity -= 0.1
+                    if(opacity <= 0) opacity = 1
+                    // 设置新的透明度
+                    this.setState({
+                        opacity
+                    })
+                }, 200)
+            }
+
+            // 组件将要卸载 (1)
+            componentWillUnmount() {
+                console.log('componentWillUnmount')
+                clearInterval(this.timer)
+            }
+
+            // 初始化渲染、状态更新后 (1+n)
+            render() {
+                console.log('render');
+                return (
+                    <div>
+                        <h2  style={{opacity:this.state.opacity}}>React学不会怎么办？</h2>
+                        <button onClick={this.death}>不活了</button>
+                    </div>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Life />, document.getElementById('test'))
+    </script>
+</body>
+
+</html>

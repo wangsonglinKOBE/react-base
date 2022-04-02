@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>不用函数柯理化</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+    /*
+      首先来说说思路，第一点，onChange不就是要一个回调函数吗，他就是要一个需要他调用的函数，好，那我们就给他一个箭头函数，如下
+      再看，这个箭头函数里面onChange给我们传入了一个event对象作为参数，我们来作作文章
+      在该箭头函数中，我们调用一个自己的函数，把event和state中的属性作为参数，如下
+    */
+        // 1. 创建组件
+        class Login extends React.Component {
+            state = {
+                userName: '',
+                password: ''
+            }
+
+            saveFormdata = (e, data) => {
+                this.setState({
+                    [data]: e.target.value
+                })
+            }
+
+            handleSubmit = (e) => {
+                const { userName, password } = this.state
+                alert(`你输入的用户名是：${userName},你输入的密码是：${password}`)
+                e.preventDefault()
+            }
+
+            render() {
+                return (
+                    <form action="http://www.atguigu.com" onSubmit={this.handleSubmit}>
+                        用户名：<input onChange={e => this.saveFormdata(e, 'userName')} type="text" name="userName" />
+                        密码：<input onInput={e => this.saveFormdata(e, 'password')} type="password" name="password" />
+                        <button>登录</button>
+                    </form>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Login />, document.getElementById('test'))
+    </script>
+</body>
+
+</html>

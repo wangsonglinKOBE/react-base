@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对象相关知识</title>
+</head>
+<body>
+    <script>
+        const ooo = 'name'
+
+        const obj = {}   
+        //说现在有个需求，需要给obj对象加一个属性name值为kobe
+
+        // 于是一想，嘿！这简单！
+        // obj.name = 'kobe'
+        // console.log(obj) //{name: "kobe"}
+        // 你要这么写，那也是没毛病其实，但是react中你定义的高阶函数可不能这么玩
+
+        // 重点来了哈，需要通过读取上面的ooo变量来实现上面的功能
+        // 嘿，这好不简单，于是大部分人开始写了，这么写的
+        // obj.ooo = 'kobe'
+        // console.log(obj) //{ooo: "kobe"}
+        // 我的天，您看这么写它对吗
+
+        // 正确玩法
+        obj[ooo] = 'kobe'
+        console.log(obj) //{name: "kobe"}
+        
+        // 对象点和对象中括号，没错，都能读取对象里面属性的值
+        // 但是对象点外面的变量可就是把外边变量直接拿来作为对象的属性了
+        // 而对象中括号是把外面的变量的值用来作为对像的属性
+        // 所以，get了吗
+        
+    </script>
+</body>
+</html>

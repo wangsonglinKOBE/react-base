@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>key的作用</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+
+    /*
+        慢动作回放---使用index索引值作为key
+        
+        初始数据：
+            { id: 1, name: 'kobe', age: 18 },
+            { id: 2, name: 'tom', age: 28 },
+        初始的虚拟DOM：
+            <li key=0>kobe---18 <input type="text"/></li>
+            <li key=1>tom---28 <input type="text"/></li>
+        
+        更新后的数据：
+            { id: 3, name: 'lisa', age: 25 },
+            { id: 1, name: 'kobe', age: 18 },
+            { id: 2, name: 'tom', age: 28 },
+        更新数据后的虚拟DOM：
+            <li key=0>lisa---25 <input type="text"/></li>
+            <li key=1>kobe---18 <input type="text"/></li>
+            <li key=2>tom---28 <input type="text"/></li>
+        新旧虚拟DOM对比 => 去旧的虚拟DOM中，找与新的虚拟DOM中相同的key
+        如果有相同的key,则对比内容，如果内容不相同则生成新的虚拟DOM，再转为真实DOM
+                                   如果内容相同则复用旧的虚拟DOM，再转为真实DOM
+        如果没有相同的key，则直接生成新的虚拟DOM
+        所以此处，该三条li都没有被复用，都是生成了新的虚拟DOM，造成了三次虚拟DOM的更新，效率大打折扣
+
+        如果再加入input输入类的节点：数据更新后，去旧的虚拟DOM中查找相同的key,
+        发现有相同的key为0，再对比内容，‘kobe---18’和 ‘lisa---25 ’不一样，所以不能复用，
+        再对比input框，发现一样，从而就使用了旧的虚拟DOM，所以lisa就使用kobe的inpup，
+        往下推，kobe用了tom的input, 而tom则没有发现旧的中存在该key，直接生成新的虚拟DOM
+        导致错乱
+        
+
+
+        ----------------------------------------------------------------------------------------------
+
+        慢动作回放---使用id唯一标识作为key
+        
+        初始数据：
+            { id: 1, name: 'kobe', age: 18 },
+            { id: 2, name: 'tom', age: 28 },
+        初始的虚拟DOM：
+            <li key=1>kobe---18</li>
+            <li key=2>tom---28</li>
+        
+        更新后的数据：
+            { id: 3, name: 'lisa', age: 25 },
+            { id: 1, name: 'kobe', age: 18 },
+            { id: 2, name: 'tom', age: 28 },
+        更新数据后的虚拟DOM：
+            <li key=3>lisa---25</li>
+            <li key=1>kobe---18</li>
+            <li key=2>tom---28</li>
+        新旧虚拟DOM对比 => 发现相同的key值：1和2，再对比内容，发现也相同
+        此时，该key值为1和2的两个虚拟DOM直接被数据更新后的虚拟DOM复用
+        只生成key值为3的虚拟DOM，远远提高了效率
+        
+        
+    */
+
+        class Person extends React.Component {
+
+            state = {
+                persons: [
+                    { id: 1, name: 'kobe', age: 18 },
+                    { id: 2, name: 'tom', age: 28 },
+                ]
+            }
+
+            add = () => {
+                const { persons } = this.state
+                const p = {id: (persons.length+1), name:'lisa', age: 25}
+                this.setState({
+                    persons: [p, ...persons]
+                })
+            }
+
+            // 初始化渲染、状态更新后  (1+n)
+            render() {
+                return (
+                    <div>
+                        <h2>展示人员信息</h2>
+                        <button onClick={this.add}>添加一个lisa</button>
+                        <h3>使用index(索引值)作为key</h3>
+                        <ul>
+                            {
+                                this.state.persons.map((item, index) => {
+                                    return <li key={index}>{item.name}---{item.age} <input type="text"/></li>
+                                })
+                            }
+                        </ul>
+                        <hr/>
+                        <hr/>
+                        <h3>使用id(数据唯一标识)作为key</h3>
+                        <ul>
+                            {
+                                this.state.persons.map(item => {
+                                    return <li key={item.id}>{item.name}---{item.age} <input type="text"/></li>
+                                })
+                            }
+                        </ul>
+                    </div>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Person />, document.getElementById('test'))
+    </script>
+</body>
+
+</html>

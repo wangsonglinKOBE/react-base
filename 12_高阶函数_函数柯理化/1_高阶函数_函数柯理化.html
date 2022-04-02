@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>高阶组件_函数柯理化</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+
+//#region
+    /*
+        高阶函数：如果一个函数符合下面2个规范中的任何一个，那么该函数就是高阶函数。
+                1. 若A函数，接收的参数是一个函数，那么A就可以称之为高阶函数
+                2. 若A函数，调用的返回值依然是一个函数，那么A就可以称之为高阶函数
+                常见的高阶函数有哪些？ Promise、arr.map、setTimeout等等
+              
+        函数的柯里化：通过函数调用继续返回函数的方式，实现多次接收参数最后统一处理的函数编码形式
+    */
+//#endregion
+
+        // 1. 创建组件
+        class Login extends React.Component {
+            state = {
+                userName: '',
+                password: ''
+            }
+
+            saveFormdata = data => {
+                return (e) => {
+                    console.log(data, e.target.value)
+                    this.setState({
+                        // 重点：这里加中括号才是读取你传入的值，也就是state对象中的值
+                        // 如果不加括号，那可不是读取state对像里的值了，变成给state对象添加属性datal了
+                        // (对象相关知识.html)见
+                        [data]: e.target.value
+                    })
+                }
+            }
+
+            handleSubmit = (e) => {
+                const { userName, password } = this.state
+                alert(`你输入的用户名是：${userName},你输入的密码是：${password}`)
+                e.preventDefault()
+            }
+
+            render() {
+                return (
+                    <form action="http://www.atguigu.com" onSubmit={this.handleSubmit}>
+                        用户名：<input onChange={this.saveFormdata('userName')} type="text" name="userName" />
+                        密码：<input onInput={this.saveFormdata('password')} type="password" name="password" />
+                        <button>登录</button>
+                    </form>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Login />, document.getElementById('test'))
+
+        /*
+          上面将this.saveFormdata()作为onChange的事件回调，这么写的意思就是将saveFormdata()函数的返回值给了onChange，
+          如果该返回值不是一个函数，那么onChange调用该函数时返回值为undfined,
+          就相当于你把一个没有被调用功能的东西给了onChange，那你每次输入的时候onChange怎么帮你调用这个东西呢？
+          于是只写saveFormdata，又做不到通过一个回调函数就可以获取每个输入框的值
+
+          重点来了！
+          那么如果saveFormdata()返回值是一个函数呢？那么意思就变了，
+          相当于你把saveFormdata()函数返回值 返回的那个函数交给了onChange作为回调，你每输入一次onChange就调他一次，
+          然后onChange会自动给他所调用的回调函数传入event事件对象，
+          那么在这个返回的函数中你所使用的参数才是onChange自动传入的event事件对象
+          然后saveFormdata()这个函数是你自己调用的，所以不能叫做回调函数嗷，还记得回调函数的特点吗，
+          回调函数的特点：你定义的，你写的逻辑，但不是你调用的
+          所以saveFormdata()函数中你可以传入state中的状态也就是每个输入框的值，
+          这样在读取这个状态的时候，重点又来了，要加中括号，不然可不是表示读取的意思
+          那么实际上上面的saveFormdata('userName')saveFormdata('password')可能还有更多，这种传入不同的实参
+          最后在统一处理的技术我们把它称为函数柯理化
+          
+          所以，宗旨就是你要把一个回调函数给到onChange就行，
+          就算是这么写的this.saveFormdata('password')()()..
+          只要你最后返回的是一个函数就OK
+
+          这个saveFormdata就是高阶函数
+        */
+    </script>
+</body>
+
+</html>

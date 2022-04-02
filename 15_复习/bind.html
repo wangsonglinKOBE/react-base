@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        function demo() {
+            console.log(this);
+        }
+        demo() //window  this指向window
+
+        // bind返回一个函数必须调用
+        demo.bind({a:1, b:2})() //{a: 1, b: 2}  this指向{a: 1, b: 2}
+
+        const a = 0.1
+        const b = 0.2
+        const c = a+b
+        console.log(c)
+    </script>
+</body>
+</html>

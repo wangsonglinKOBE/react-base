@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>验证Diffing算法</title>
+</head>
+
+<body>
+    <!-- 准备好一个“容器” -->
+    <div id="test"></div>
+
+    <!-- 引入react核心库 -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入react-dom,用于支持react操作DOM -->
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- 引入babel，用于将jsx转为JS -->
+    <script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+
+    <!-- 此处一定要写babel,表示要写得是jsx，而不是JS脚本 -->
+    <script type="text/babel">
+        
+        class Time extends React.Component {
+
+            state = { date: new Date() }
+
+            componentDidMount() {
+                setInterval(() => {
+                    this.setState({
+                        date: new Date()
+                    })
+                }, 1000)
+            }
+          
+            // 初始化渲染、状态更新后  (1+n)
+            render() {
+                return (
+                    <div>
+                        <h2>Hello</h2>
+                        <input type="text"/>
+                        <span>现在是：{this.state.date.toTimeString()}</span>
+                    </div>
+                )
+            }
+
+        }
+
+        // 2. 渲染虚拟DOM到页面
+        ReactDOM.render(<Time/>, document.getElementById('test'))
+    </script>
+</body>
+
+</html>
